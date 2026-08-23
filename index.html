@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MM WBCS ACADEMY 9732974125 MOCK TEST 15 for all comp exam</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { max-width: 800px; width: 100%; background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1, h2 { text-align: center; color: #1e3a8a; }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; color: #334155; }
+        input[type="text"], input[type="tel"] { width: 100%; padding: 12px; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 16px; outline: none; box-sizing: border-box; }
+        input:focus { border-color: #3b82f6; }
+        .btn { background: #2563eb; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: 0.3s; font-weight: bold; width: 100%; margin-top: 10px; display: block; }
+        .btn:hover { background: #1d4ed8; }
+        .btn-success { background: #16a34a; }
+        .btn-success:hover { background: #15803d; }
+        #timer { font-size: 20px; font-weight: bold; color: #dc2626; text-align: center; position: sticky; top: 10px; background: white; padding: 10px; border: 2px solid #dc2626; border-radius: 8px; display: inline-block; left: 50%; transform: translateX(-50%); z-index: 100; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .question-block { margin-bottom: 25px; padding: 20px; border-radius: 8px; background: #f8fafc; border-left: 5px solid #3b82f6; }
+        .options-label { display: block; margin: 10px 0; cursor: pointer; padding: 10px; border-radius: 6px; background: #ffffff; border: 1px solid #e2e8f0; }
+        input[type="radio"] { margin-right: 10px; transform: scale(1.2); }
+        .hidden { display: none; }
+        #result-box { background: #eff6ff; padding: 20px; border-radius: 10px; border: 2px solid #bfdbfe; margin-bottom: 25px; text-align: center; }
+        .correct-ans { background: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; font-weight: bold; }
+        .wrong-ans { background: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; font-weight: bold; }
+        .badge { display: inline-block; padding: 2px 8px; font-size: 12px; font-weight: bold; border-radius: 4px; margin-left: 10px; color: white; }
+        .badge-success { background: #22c55e; }
+        .badge-danger { background: #ef4444; }
+        #error-msg { color: #dc2626; text-align: center; font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Screen 1: Login -->
+    <div id="login-screen">
+        <h1>MM WBCS ACADEMY 9732974125 MOCK TEST 15 for all comp exam</h1>
+        <h2>পরীক্ষা শুরু করতে আপনার তথ্য দিন</h2>
+        <div class="form-group">
+            <label for="student-name">আপনার নাম:</label>
+            <input type="text" id="student-name" placeholder="নাম লিখুন..." required>
+        </div>
+        <div class="form-group">
+            <label for="student-phone">মোবাইল নম্বর:</label>
+            <input type="tel" id="student-phone" placeholder="১০ ডিজিট নম্বর..." required>
+        </div>
+        <div id="error-msg"></div>
+        <button class="btn" id="start-btn" onclick="validateAndStart()">পরীক্ষা শুরু করুন</button>
+    </div>
+
+    <!-- Screen 2: Quiz -->
+    <div id="quiz-screen" class="hidden">
+        <div id="timer">সময় বাকি: 40:00</div>
+        <h1>মক টেস্ট (৫০ টি প্রশ্ন - ৫০ নম্বর)</h1>
+        <p style="text-align: center; color: #64748b;">(সঠিক উত্তর: +১ | ভুল উত্তর: -০.২৫)</p>
+        <hr>
+        <form id="quiz-form">
+            <div id="questions-container"></div>
+            <button type="button" class="btn btn-success" onclick="submitTest(false)">মক টেস্ট সাবমিট করুন</button>
+        </form>
+    </div>
+
+    <!-- Screen 3: Result & Review -->
+    <div id="result-screen" class="hidden">
+        <h1>পরীক্ষার ফলাফল ও রিভিউ</h1>
+        <div id="result-box"></div>
+        <hr>
+        <div id="review-container"></div>
+    </div>
+</div>
+
+<script>
+    const questionsData = [
+        { question: "‘ভারতীয় জাতীয় কংগ্রেস’-এর প্রথম মহিলা সভাপতি কে ছিলেন?", options: ["সরোজিনী নাইডু", "অ্যানি বেসান্ত", "বিজয়লক্ষ্মী পণ্ডিত", "সুচেতা কৃপালনী"], ans: "B" },
+        { question: "একটি পণ্যের ক্রয়মূল্য ও বিক্রয়মূল্যের অনুপাত 8 : 9। পণ্যটির লাভের হার কত?", options: ["10%", "11.5%", "12.5%", "15%"], ans: "C" },
+        { question: "পশ্চিমবঙ্গের রাজ্য বৃক্ষ কোনটি?", options: ["বট", "আম", "ছাতিম", "শাল"], ans: "C" },
+        { question: "‘হাওড়া ব্রিজ’-এর সরকারি নাম কী?", options: ["বিদ্যাসাগর সেতু", "রবীন্দ্র সেতু", "বিবেকানন্দ সেতু", "নেতাজি সেতু"], ans: "B" },
+        { question: "ভারতের জাতীয় ফুল কোনটি?", options: ["গোলাপ", "পদ্ম", "জবা", "সূর্যমুখী"], ans: "B" },
+        { question: "কোন গ্রহকে ‘লাল গ্রহ’ বলা হয়?", options: ["শুক্র", "বৃহস্পতি", "মঙ্গল", "শনি"], ans: "C" },
+        { question: "ভারতের জাতীয় পতাকার নকশা কে করেছিলেন?", options: ["পিঙ্গালি ভেঙ্কাইয়া", "রবীন্দ্রনাথ ঠাকুর", "বি. আর. আম্বেদকর", "বঙ্কিমচন্দ্র চট্টোপাধ্যায়"], ans: "A" },
+        { question: "কত-এর 25% 200?", options: ["50", "800", "100", "1000"], ans: "B" },
+        { question: "3 : 5 = x : 25 হলে x-এর মান কত?", options: ["12", "15", "18", "20"], ans: "B" },
+        { question: "A ও B মিলে একটি কাজ 8 দিনে করতে পারে। A একা কাজটি 12 দিনে করতে পারে। B একা কাজটি কত দিনে করতে পারবে?", options: ["18 দিন", "20 দিন", "24 দিন", "30 দিন"], ans: "C" },
+        { question: "‘ভারতের কমিউনিস্ট পার্টি’-র প্রথম অধিবেশন কোথায় অনুষ্ঠিত হয়েছিল?", options: ["কলকাতা", "কানপুর", "বোম্বাই", "লাহোর"], ans: "B" },
+        { question: "‘ইলবার্ট বিল’ বিতর্ক কোন ভাইসরয়ের সময়ে হয়েছিল?", options: ["লর্ড লিটন", "লর্ড রিপন", "লর্ড কার্জন", "লর্ড ডাফরিন"], ans: "B" },
+        { question: "‘অপারেশন ফ্লাড’ কোন বিপ্লবের সঙ্গে সম্পর্কিত?", options: ["সবুজ বিপ্লব", "শ্বেত বিপ্লব", "নীল বিপ্লব", "হলুদ বিপ্লব"], ans: "B" },
+        { question: "‘নাট্যশাস্ত্র’-এর রচয়িতা হিসেবে কাকে ধরা হয়?", options: ["ভরত মুনি", "কালিদাস", "বাণভট্ট", "পাণিনি"], ans: "A" },
+        { question: "পশ্চিমবঙ্গের ‘গরুমারা জাতীয় উদ্যান’ কোন প্রাণীর জন্য বিশেষভাবে পরিচিত?", options: ["গণ্ডার", "সিংহ", "বন্য মহিষ", "উট"], ans: "A" },
+        { question: "‘কোচবিহার রাজবাড়ি’ কোন স্থাপত্যশৈলীর প্রভাব বহন করে?", options: ["মুঘল", "ইতালীয় রেনেসাঁ", "দ্রাবিড়", "বৌদ্ধ"], ans: "B" },
+        { question: "ভারতের উপরাষ্ট্রপতি কোন কক্ষের পদাধিকারবলে সভাপতি?", options: ["লোকসভা", "রাজ্যসভা", "বিধানসভা", "বিধান পরিষদ"], ans: "B" },
+        { question: "ভারতের সংবিধানে ‘অর্থনৈতিক ন্যায়’ কোন অংশের মূল উদ্দেশ্যের অন্তর্ভুক্ত?", options: ["প্রস্তাবনা", "মৌলিক অধিকার", "মৌলিক কর্তব্য", "সপ্তম তফসিল"], ans: "A" },
+        { question: "‘Inflation’ পরিমাপের ক্ষেত্রে WPI-এর পূর্ণরূপ কী?", options: ["World Price Index", "Wholesale Price Index", "Weighted Price Indicator", "Wholesale Product Index"], ans: "B" },
+        { question: "‘NABARD’ প্রধানত কোন ক্ষেত্রের সঙ্গে যুক্ত?", options: ["শিল্প ও বাণিজ্য", "কৃষি ও গ্রামীণ উন্নয়ন", "প্রতিরক্ষা", "মহাকাশ গবেষণা"], ans: "B" },
+        { question: "‘Lysosome’ কে কখনও কখনও কী বলা হয়?", options: ["কোষের মস্তিষ্ক", "কোষের আত্মঘাতী থলি", "কোষের শক্তিঘর", "কোষের রান্নাঘর"], ans: "B" },
+        { question: "কোন ভিটামিন রক্ত জমাট বাঁধতে গুরুত্বপূর্ণ ভূমিকা পালন করে?", options: ["Vitamin A", "Vitamin B12", "Vitamin C", "Vitamin K"], ans: "D" },
+        { question: "‘Kyoto Protocol’ কোন বিষয়ের সঙ্গে সম্পর্কিত?", options: ["জীববৈচিত্র্য", "গ্রিনহাউস গ্যাস নির্গমন হ্রাস", "জলাভূমি সংরক্ষণ", "ওজোন স্তর"], ans: "B" },
+        { question: "‘Bihu’ প্রধানত কোন রাজ্যের উৎসব?", options: ["অসম", "মণিপুর", "ত্রিপুরা", "মিজোরাম"], ans: "A" },
+        { question: "‘Ryder Cup’ কোন খেলার সঙ্গে যুক্ত?", options: ["গল্ফ", "টেনিস", "ক্রিকেট", "ফুটবল"], ans: "A" },
+        { question: "একটি পণ্য 15% লাভে বিক্রি করা হলো। যদি ক্রয়মূল্য 20% কম হত এবং বিক্রয়মূল্য অপরিবর্তিত থাকত, তবে লাভের হার কত হত?", options: ["35%", "40%", "43.75%", "45%"], ans: "C" },
+        { question: "দুটি সংখ্যার অনুপাত 7 : 9 এবং তাদের যোগফল 128 হলে ছোট সংখ্যাটি কত?", options: ["48", "49", "56", "63"], ans: "C" },
+        { question: "A : B = 3 : 4 এবং B : C = 8 : 11 হলে A : C কত?", options: ["3 : 11", "6 : 11", "8 : 11", "12 : 11"], ans: "B" },
+        { question: "A ও B-এর আয়ের অনুপাত 5 : 7 এবং B ও C-এর আয়ের অনুপাত 14 : 15। যদি A ও C-এর মোট আয় ₹8,400 হয়, তবে B-এর আয় কত?", options: ["₹3,500", "₹4,000", "₹4,200", "₹4,500"], ans: "C" },
+        { question: "একটি গাড়ি প্রথম 120 কিমি পথ 40 কিমি/ঘণ্টা বেগে এবং পরবর্তী 180 কিমি পথ 60 কিমি/ঘণ্টা বেগে অতিক্রম করে। পুরো যাত্রায় গাড়িটির গড় বেগ কত?", options: ["48 কিমি/ঘণ্টা", "50 কিমি/ঘণ্টা", "52 কিমি/ঘণ্টা", "54 কিমি/ঘণ্টা"], ans: "B" },
+        { question: "‘পিটস ইন্ডিয়া অ্যাক্ট, 1784’-এর প্রধান উদ্দেশ্য কী ছিল?", options: ["কোম্পানির বাণিজ্যিক একচেটিয়া অধিকার বিলোপ", "কোম্পানির উপর ব্রিটিশ সরকারের নিয়ন্ত্রণ বৃদ্ধি", "ভারতীয়দের ভোটাধিকার প্রদান", "জমিদারি প্রথা বিলোপ"], ans: "B" },
+        { question: "‘ভারতীয় কাউন্সিল আইন, 1909’ কোন নামে বেশি পরিচিত?", options: ["Montagu-Chelmsford Reforms", "Morley-Minto Reforms", "Ripon Reforms", "Curzon Reforms"], ans: "B" },
+        { question: "‘রামকৃষ্ণ মিশন’ প্রতিষ্ঠা করেন কে?", options: ["স্বামী বিবেকানন্দ", "রামকৃষ্ণ পরমহংস", "কেশবচন্দ্র সেন", "দেবেন্দ্রনাথ ঠাকুর"], ans: "A" },
+        { question: "‘ভারতের প্রথম স্বাধীনতা যুদ্ধ’ নামে 1857 সালের বিদ্রোহকে কে অভিহিত করেছিলেন?", options: ["ভি. ডি. সাভারকর", "আর. সি. মজুমদার", "বিপিনচন্দ্র পাল", "সুরেন্দ্রনাথ বন্দ্যোপাধ্যায়"], ans: "A" },
+        { question: "পশ্চিমবঙ্গের ‘দুয়ার্স’ অঞ্চল প্রধানত কোন ধরনের ভূপ্রকৃতির অন্তর্গত?", options: ["বদ্বীপ", "হিমালয়ের পাদদেশীয় সমভূমি", "মালভূমি", "উপকূলীয় সমভূমি"], ans: "B" },
+        { question: "পশ্চিমবঙ্গের কোন নদীটি জলপাইগুড়ি ও কোচবিহার অঞ্চলের জলপ্রবাহ ব্যবস্থার গুরুত্বপূর্ণ অংশ?", options: ["তোর্সা", "অজয়", "কংসাবতী", "ময়ূরাক্ষী"], ans: "A" },
+        { question: "‘সুন্দরবন’ বদ্বীপ প্রধানত কোন দুটি নদী ব্যবস্থার পলিতে গঠিত?", options: ["গঙ্গা ও ব্রহ্মপুত্র", "নর্মদা ও তাপ্তি", "গোদাবরী ও কৃষ্ণা", "মহানদী ও ব্রাহ্মণী"], ans: "A" },
+        { question: "একজন ব্যক্তি একটি নির্দিষ্ট দূরত্বের 40% পথ 24 কিমি/ঘণ্টা বেগে এবং বাকি 60% পথ 36 কিমি/ঘণ্টা বেগে অতিক্রম করেন। সমগ্র যাত্রার গড় বেগ কত?", options: ["28.8 কিমি/ঘণ্টা", "30 কিমি/ঘণ্টা", "31.2 কিমি/ঘণ্টা", "32 কিমি/ঘণ্টা"], ans: "A" },
+        { question: "ভারতের সংবিধানের কোন তফসিলে দলত্যাগ-বিরোধী আইন রয়েছে?", options: ["অষ্টম", "নবম", "দশম", "একাদশ"], ans: "C" },
+        { question: "‘Zero Hour’ সম্পর্কে সঠিক বক্তব্য কোনটি?", options: ["এটি সংবিধানে স্পষ্টভাবে উল্লেখিত", "এটি সংসদের নিয়মে নির্দিষ্টভাবে সংজ্ঞায়িত", "এটি সংসদীয় প্রথা, সংবিধানে উল্লেখ নেই", "এটি শুধুমাত্র রাজ্যসভায় হয়"], ans: "C" },
+        { question: "‘Crowding Out Effect’ সাধারণত কোন পরিস্থিতির সঙ্গে সম্পর্কিত?", options: ["সরকারি ঋণগ্রহণের ফলে বেসরকারি বিনিয়োগ হ্রাস", "রপ্তানি বৃদ্ধির ফলে আমদানি বৃদ্ধি", "মুদ্রাস্ফীতি হ্রাস", "বেকারত্ব হ্রাস"], ans: "A" },
+        { question: "‘Disguised Unemployment’ ভারতের কোন ক্ষেত্রে বেশি দেখা যায়?", options: ["ভারী শিল্প", "কৃষি", "ব্যাংকিং", "তথ্যপ্রযুক্তি"], ans: "B" },
+        { question: "মানুষের চোখে আলোর পরিমাণ নিয়ন্ত্রণ করে কোন অংশ?", options: ["Retina", "Cornea", "Iris", "Optic nerve"], ans: "C" },
+        { question: "‘Acetylcholine’ প্রধানত কোন ধরনের জৈব রাসায়নিক পদার্থ?", options: ["হরমোন", "নিউরো ট্রান্সমিটার", "এনজাইম", "অ্যান্টিবডি"], ans: "B" },
+        { question: "‘PCR’ প্রযুক্তি মূলত কী কাজে ব্যবহৃত হয়?", options: ["প্রোটিন ভাঙতে", "DNA-এর নির্দিষ্ট অংশের বহু কপি তৈরি করতে", "রক্তচাপ মাপতে", "কোষ ধ্বংস করতে"], ans: "B" },
+        { question: "‘Ecological Pyramid’ ধারণাটি কোন বিজ্ঞানীর কাজের সঙ্গে যুক্ত?", options: ["Charles Elton", "Charles Darwin", "Gregor Mendel", "Louis Pasteur"], ans: "A" },
+        { question: "‘Dronacharya Award’ কোন ক্ষেত্রে দেওয়া হয়?", options: ["ক্রীড়াবিদদের", "ক্রীড়া প্রশিক্ষকদের", "বিজ্ঞানীদের", "শিক্ষকদের"], ans: "B" },
+        { question: "‘Convention on Biological Diversity’ কোন সম্মেলনের সঙ্গে যুক্ত?", options: ["Stockholm Conference", "Rio Earth Summit", "Kyoto Conference", "Montreal Conference"], ans: "B" },
+        { question: "‘Chipko Movement’-এর প্রধান উদ্দেশ্য কী ছিল?", options: ["নদী সংরক্ষণ", "বন সংরক্ষণ", "বন্যপ্রাণী শিকার", "খনিজ সম্পদ সংরক্ষণ"], ans: "B" },
+        { question: "একজন দোকানদার একটি পণ্য 20% ক্ষতিতে বিক্রি করল। যদি সে পণ্যটি 180 টাকা বেশি দামে বিক্রি করত, তবে 10% লাভ হত। পণ্যটির ক্রয়মূল্য কত?", options: ["500 টাকা", "600 টাকা", "700 টাকা", "800 টাকা"], ans: "B" }
+    ];
+
+    const googleSheetUrl = "https://script.google.com/macros/s/AKfycbwghLCs1nkoe_VvaewQbmsi3cygZVILVAa6nDpPriCjUNs5kNbc6omRKLt-DPb1YhpQ3w/exec";
+
+    let studentName = "";
+    let studentPhone = "";
+    let timeRemaining = 40 * 60; 
+    let timerInterval;
+
+    function validateAndStart() {
+        const nameInput = document.getElementById('student-name').value.trim();
+        const phoneInput = document.getElementById('student-phone').value.trim();
+        const errorMsg = document.getElementById('error-msg');
+
+        errorMsg.innerText = "";
+
+        if (!nameInput || !phoneInput) {
+            errorMsg.innerText = "দয়া করে নাম এবং মোবাইল নম্বর দুটিই প্রদান করুন।";
+            return;
+        }
+
+        if (phoneInput.length < 10) {
+            errorMsg.innerText = "সঠিক ১০ ডিজিটের মোবাইল নম্বর প্রদান করুন।";
+            return;
+        }
+
+        studentName = nameInput;
+        studentPhone = phoneInput;
+
+        document.getElementById('login-screen').className = 'hidden';
+        document.getElementById('quiz-screen').className = '';
+
+        renderQuestions();
+        startTimer();
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = '';
+
+        questionsData.forEach((item, index) => {
+            const qNum = index + 1;
+            const optionLetters = ["A", "B", "C", "D"];
+            let optionsHTML = '';
+
+            item.options.forEach((opt, i) => {
+                optionsHTML += `
+                    <label class="options-label" id="label-q${qNum}-${optionLetters[i]}">
+                        <input type="radio" name="q${qNum}" value="${optionLetters[i]}">
+                        <strong>${optionLetters[i]}.</strong> ${opt}
+                    </label>
+                `;
+            });
+
+            const qBlock = document.createElement('div');
+            qBlock.className = 'question-block';
+            qBlock.innerHTML = `<h3>প্রশ্ন ${qNum}: ${item.question}</h3>${optionsHTML}`;
+            container.appendChild(qBlock);
+        });
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            let mins = Math.floor(timeRemaining / 60);
+            let secs = timeRemaining % 60;
+            let formattedMins = mins < 10 ? '0' + mins : mins;
+            let formattedSecs = secs < 10 ? '0' + secs : secs;
+            document.getElementById('timer').innerText = `সময় বাকি: ${formattedMins}:${formattedSecs}`;
+
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                alert("৪০ মিনিট সময় শেষ! আপনার টেস্ট স্বয়ংক্রিয়ভাবে সাবমিট হচ্ছে।");
+                submitTest(true);
+            }
+        }, 1000);
+    }
+
+    function submitTest(isAutoSubmit) {
+        if (!isAutoSubmit && !confirm("আপনি কি নিশ্চিত টেস্ট সাবমিট করতে চান?")) return;
+        clearInterval(timerInterval);
+
+        let correctCount = 0;
+        let wrongCount = 0;
+        let unansweredCount = 0;
+
+        document.getElementById('quiz-screen').className = 'hidden';
+        document.getElementById('result-screen').className = '';
+
+        const reviewContainer = document.getElementById('review-container');
+        reviewContainer.innerHTML = '<h2>উত্তরপত্র পর্যালোচনা (Preview)</h2>';
+
+        questionsData.forEach((item, index) => {
+            const qNum = index + 1;
+            const selectedOpt = document.querySelector(`input[name="q${qNum}"]:checked`);
+            const userAns = selectedOpt ? selectedOpt.value : null;
+
+            if (userAns === null) unansweredCount++;
+            else if (userAns === item.ans) correctCount++;
+            else wrongCount++;
+
+            const cloneBlock = document.getElementsByClassName('question-block')[index].cloneNode(true);
+            reviewContainer.appendChild(cloneBlock);
+
+            const correctLabel = reviewContainer.querySelector(`#label-q${qNum}-${item.ans}`);
+            if (correctLabel) {
+                correctLabel.className += ' correct-ans';
+                correctLabel.innerHTML += ' <span class="badge badge-success">সঠিক উত্তর</span>';
+            }
+            if (userAns && userAns !== item.ans) {
+                const wrongLabel = reviewContainer.querySelector(`#label-q${qNum}-${userAns}`);
+                if (wrongLabel) {
+                    wrongLabel.className += ' wrong-ans';
+                    wrongLabel.innerHTML += ' <span class="badge badge-danger">আপনার উত্তর</span>';
+                }
+            }
+        });
+
+        let finalScore = (correctCount * 1) - (wrongCount * 0.25);
+        finalScore = Math.max(0, finalScore);
+
+        document.getElementById('result-box').innerHTML = `
+            <h3>পরীক্ষার্থীর নাম: ${studentName}</h3>
+            <p>মোবাইল নম্বর: ${studentPhone}</p>
+            <p style="font-size: 24px; font-weight:bold; color:#1e3a8a;">প্রাপ্ত নম্বর: ${finalScore} / ${questionsData.length}</p>
+            <p>সঠিক: <span style="color:green; font-weight:bold;">${correctCount}</span> | ভুল: <span style="color:red; font-weight:bold;">${wrongCount}</span> | উত্তর দেওয়া হয়নি: ${unansweredCount}</p>
+        `;
+
+        if (googleSheetUrl) {
+            const payload = {
+                name: studentName,
+                phone: studentPhone,
+                score: finalScore,
+                correct: correctCount,
+                wrong: wrongCount
+            };
+
+            fetch(googleSheetUrl, {
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "text/plain"
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(() => console.log("Google Sheet-এ সফলভাবে ডাটা পাঠানো হয়েছে!"))
+            .catch(err => console.error("Google Sheet Error: ", err));
+        }
+    }
+</script>
+</body>
+</html>
